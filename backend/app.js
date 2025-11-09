@@ -63,8 +63,8 @@ io.on("connection", (socket) => {
         if(users[room].indexOf(socket.id)==-1)users[room].push(socket.id);
         roomMap[socket.id] = room;
 
-        // Notify others in the room
-        socket.to(room).emit("chat_message", {
+        // Notify everyone in the room (including sender)
+        io.to(room).emit("chat_message", {
             from: "System",
             content: `${socket.id} has joined the room`,
         });
@@ -73,6 +73,8 @@ io.on("connection", (socket) => {
 
     // Handle chat messages for a room
     socket.on("chat_message", ({ room, content }) => {
+        console.log(content);
+        console.log('afdas');
         io.to(room).emit("chat_message", { from: socket.id, content });
     });
 
@@ -80,16 +82,16 @@ io.on("connection", (socket) => {
         io.to(room).emit("music", { from: socket.id, content });
     });
 
-    socket.on("syncMusic", ({ room, time, seek }) => {
-        io.to(room).emit("syncMusic", { from: socket.id, time,seek });
-        const content={
-            action:"play-cont",
-            startTime:time+3000,
-            seek: seek + 3.0
-        }
-        console.log("fads");
-        io.to(room).emit("music", { from: socket.id, content });
-    });
+    // socket.on("syncMusic", ({ room, time, seek }) => {
+    //     io.to(room).emit("syncMusic", { from: socket.id, time,seek });
+    //     const content={
+    //         action:"play-cont",
+    //         startTime:time+3000,
+    //         seek: seek + 3.0
+    //     }
+    //     console.log("fads");
+    //     io.to(room).emit("music", { from: socket.id, content });
+    // });
 
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);

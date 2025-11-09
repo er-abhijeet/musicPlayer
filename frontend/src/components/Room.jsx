@@ -41,33 +41,6 @@ function Room() {
         };
     }, []);
 
-    // useEffect(() => {
-    //     if (!playing) return;
-
-    //     const interval = setInterval(() => {
-    //         if (audioRef.current) {
-    //             socket.emit("syncMusic", {
-    //                 room: roomId,
-    //                 time: Date.now(),
-    //                 seek: audioRef.current.currentTime,
-    //             });
-    //         }
-    //     }, 3000);
-
-    //     return () => clearInterval(interval);
-    // }, [playing]); // <--- important!
-
-    useEffect(() => {
-        const handleSyncMusic = (msg) => {
-            console.log("alu", msg);
-        };
-
-        socket.on("syncMusic", handleSyncMusic);
-
-        return () => {
-            socket.off("syncMusic", handleSyncMusic);
-        };
-    }, []);
 
     useEffect(() => {
         const musicAction = (msg) => {
@@ -90,24 +63,6 @@ function Room() {
                 audioRef.current.pause();
                 setPlaying(false);
             }
-            // else if (msg.content.action === "play-cont") {
-            //     console.log("playing", playing)
-            //     const delay = msg.content.startTime - Date.now();
-            //     console.log("delay", delay)
-            //     if(!playing)return;
-            //     if (delay > 0) {
-            //         console.log("synced...")
-            //         setTimeout(() => {
-            //             audioRef.current.currentTime = msg.content.seek;
-            //             audioRef.current.play();
-            //             // setPlaying(true);
-            //         }, delay);
-            //     } else {
-            //         console.log("shitt!");
-            //         audioRef.current.currentTime = msg.content.seek;
-            //         audioRef.current.play();
-            //     }
-            // }
         };
         socket.on("music", musicAction);
         return () => {
